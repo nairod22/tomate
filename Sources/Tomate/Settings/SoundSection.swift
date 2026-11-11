@@ -37,7 +37,9 @@ struct SoundSection: View {
                 Image(systemName: settings.soundOn ? "speaker.fill" : "speaker.slash.fill")
                     .font(.system(size: 12))
                     .foregroundStyle(Theme.secondaryText(scheme))
-                Slider(value: $settings.volume, in: 0...1, onEditingChanged: volumeEditingChanged)
+                // TOOLCHAIN WORKAROUND (see CLAUDE.md): should be `onEditingChanged: volumeEditingChanged`.
+                // Swift 6.3 crashes emitting the method-reference thunk.
+                Slider(value: $settings.volume, in: 0...1, onEditingChanged: { volumeEditingChanged($0) })
                     .tint(Theme.work(scheme))
                     .accessibilityLabel("Volume")
                 Image(systemName: "speaker.wave.3.fill")

@@ -20,3 +20,12 @@ Pomodoro menu bar app, SwiftUI + AppKit, Swift Package, macOS 26+, no dependenci
 - `TOMATE_AUTOSTART=1`: starts the active mode
 - `TOMATE_AUTOPAUSE=1`: with autostart, pauses right away (idle measurements)
 - `TOMATE_SNAPSHOT_DIR=/path`: renders every view to PNG then quits (only reliable way to check the UI: screencapture blurs other apps)
+
+## Toolchain workarounds (GitHub runner: Xcode 26.6 / Swift 6.3.3)
+
+The release runner compiles with Swift 6.3.3, older than the local toolchain (Xcode 27 / Swift 6.4). Code below is written the way 6.3 accepts; restore the intended form once the `macos` runner ships Xcode 27 (check with `ls /Applications/Xcode*` in a workflow step). Search the code for `TOOLCHAIN WORKAROUND`.
+
+- Passing a `@MainActor` view method as a `(Bool) -> Void` callback crashes 6.3 in IRGen (`SyncCallEmission::setArgs`, reabstraction thunk `$sSbScA_pSgIeAghyg_SbIeAghn_TR`), even in release builds. Wrap it in a closure instead.
+  - `Settings/GeneralSection.swift`: intended `Binding(get: { launchAtLogin }, set: setLaunchAtLogin)`, workaround `set: { setLaunchAtLogin($0) }`.
+  - `Settings/SoundSection.swift`: intended `Slider(..., onEditingChanged: volumeEditingChanged)`, workaround `onEditingChanged: { volumeEditingChanged($0) }`.
+- `swift test` also crashes 6.3 (the app executable is rebuilt in test mode), so tests run locally only, never in CI.

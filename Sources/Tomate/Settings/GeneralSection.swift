@@ -41,7 +41,9 @@ struct GeneralSection: View {
                 Spacer()
                 // Custom binding on purpose: the write goes through SMAppService, which
                 // can refuse, so the displayed state is read back from the system.
-                Toggle("Ouvrir au démarrage", isOn: Binding(get: { launchAtLogin }, set: setLaunchAtLogin))
+                // TOOLCHAIN WORKAROUND (see CLAUDE.md): should be `set: setLaunchAtLogin`.
+                // Swift 6.3 crashes emitting the method-reference thunk.
+                Toggle("Ouvrir au démarrage", isOn: Binding(get: { launchAtLogin }, set: { setLaunchAtLogin($0) }))
                     .toggleStyle(.switch)
                     .tint(Theme.blue)
                     .labelsHidden()
