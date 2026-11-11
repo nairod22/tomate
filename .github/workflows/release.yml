@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check tag matches Info.plist version
+        id: version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PLIST_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)"
+          if [[ "${TAG#v}" != "$PLIST_VERSION" ]]; then
+            echo "::error::Tag $TAG does not match CFBundleShortVersionString $PLIST_VERSION"
+            exit 1
+          fi
+          echo "version=$PLIST_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build Tomate.app
+        run: ./build.sh
+
+      - name: Zip app
+        run: ditto -c -k --keepParent build/Tomate.app Tomate.zip
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          cat > notes.md <<'EOF'
+          Public beta. Requires macOS 26 or later.
+
+          ## Install
+
+          1. Download `Tomate.zip` below, unzip it, and move `Tomate.app` to `/Applications`.
+          2. Open it once. macOS blocks it because Tomate is not signed with an Apple Developer ID.
+          3. Go to **System Settings → Privacy & Security**, scroll to **Security**, and click **Open Anyway**.
+
+          You only need to do this once.
+          EOF
+          gh release create "$GITHUB_REF_NAME" Tomate.zip \
+            --title "Tomate $VERSION (beta)" \
+            --notes-file notes.md \
+            --generate-notes
