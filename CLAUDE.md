@@ -2,7 +2,7 @@
 
 Pomodoro menu bar app, SwiftUI + AppKit, Swift Package, macOS 26+, no dependencies.
 
-- Build: `swift build` · app: `./build.sh [--install]` · tests: `swift test`
+- Build: `swift build` · app: `./build.sh [--install]` · tests: `swift test`, run locally before every push and tag. CI does not run them: GitHub's macOS runners top out at Xcode 26.6 / Swift 6.3, whose compiler crashes building the app target in test mode.
 - Targets: `TomateCore` (timer state machine, scheduling, settings, formatting; no AppKit), `Tomate` (menu bar app), `TomateCoreTests` (Swift Testing, fake clock), `TomatePerfTests` (XCTest `measure` of the icon render).
 - Energy rule: nothing ticks in the background. `TimerEngine` plans one wake-up per phase end on `ContinuousClock`; `MenuBarRefresher` redraws only when `MenuBarFace` changes (whole minutes, 40 wedge steps), zero wake-ups while idle/paused/awaiting. Per-second UI lives in `TimelineView` (popover only). Wake-up budgets in `WakeBudgetTests` guard this.
 - Idle cost: `scripts/measure-idle.sh [label]` appends CPU/footprint per scenario to `scripts/measurements.csv`.
