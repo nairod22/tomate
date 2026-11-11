@@ -12,9 +12,11 @@ struct IconButton: View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: size > 36 ? 16 : 13, weight: .semibold))
+                .foregroundStyle(Theme.primaryText(scheme))
                 .frame(width: size, height: size)
                 .background(Circle().fill(Theme.fill(scheme)))
                 .contentShape(Circle())
+                .glassEffect(.regular.interactive(), in: .circle)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
@@ -22,30 +24,39 @@ struct IconButton: View {
     }
 }
 
-/// 44 pt filled capsule button.
+/// 44 pt filled capsule button. Ink by default, like the landing-page download button.
 struct PrimaryButton: View {
     let title: String
     var systemImage: String? = nil
-    let color: Color
-    var foreground: Color = .white
+    var color: Color? = nil
+    var foreground: Color? = nil
     let action: () -> Void
+    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
+        let fill = color ?? Theme.ink(scheme)
         Button(action: action) {
             HStack(spacing: 8) {
                 if let systemImage { Image(systemName: systemImage).font(.system(size: 12, weight: .bold)) }
                 Text(title).font(.system(size: 14, weight: .semibold))
             }
-            .foregroundStyle(foreground)
+            .foregroundStyle(foreground ?? (color == nil ? Theme.onInk(scheme) : .white))
             .frame(maxWidth: .infinity, minHeight: 44)
-            .background(
-                Capsule().fill(color)
-                    .shadow(color: color.opacity(0.3), radius: 6, y: 3)
-            )
-            .overlay(Capsule().strokeBorder(.white.opacity(0.25), lineWidth: 0.5))
+            .background(Capsule().fill(fill))
+            .overlay(Capsule().strokeBorder(.white.opacity(0.18), lineWidth: 0.5))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressScale())
+    }
+}
+
+/// Subtle press feedback for custom-drawn buttons.
+struct PressScale: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .animation(.snappy(duration: 0.15), value: configuration.isPressed)
     }
 }
 
@@ -142,7 +153,7 @@ struct NumberStepper: View {
     }
 }
 
-/// Grouped rounded section with an uppercase header.
+/// Grouped rounded section with a quiet sentence-case header.
 struct SettingsGroup<Content: View>: View {
     let title: String
     @ViewBuilder let content: Content
@@ -150,9 +161,8 @@ struct SettingsGroup<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title.uppercased())
-                .font(.system(size: 11, weight: .semibold))
-                .tracking(0.6)
+            Text(title)
+                .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(Theme.secondaryText(scheme))
                 .padding(.horizontal, 4)
             VStack(spacing: 0) { content }

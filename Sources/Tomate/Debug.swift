@@ -33,13 +33,18 @@ enum DebugSnapshots {
             save("2-settings", SettingsView(close: {}))
             engine.start(settings.activePreset)
             save("3-timer", TimerView(openSettings: {}))
+            engine.togglePause()
+            save("3-timer-paused", TimerView(openSettings: {}))
+            engine.togglePause()
             for (f, n) in [(Finished.work, "work"), (.pause, "pause"), (.block, "block")] {
                 save("4-overlay-\(n)", OverlayView(finished: f, showsCard: true, proceed: {}, snooze: {})
                     .frame(height: 520), width: 520)
             }
-            save("0-capsule-work", StatusCapsule(kind: .work, text: "32:14", dark: scheme == .dark), width: 90)
-            save("0-capsule-pause", StatusCapsule(kind: .pause, text: "09:48", dark: scheme == .dark), width: 90)
-            save("0-capsule-idle", StatusCapsule(kind: .idle, text: "Prêt", dark: scheme == .dark), width: 90)
+            let dark = scheme == .dark
+            save("0-icon-idle", StatusIcon(state: .idle, dark: dark), width: 80)
+            save("0-icon-running", StatusIcon(state: .running, progress: 0.4, text: "32:14", dark: dark), width: 80)
+            save("0-icon-running-notext", StatusIcon(state: .running, progress: 0.7, dark: dark), width: 80)
+            save("0-icon-paused", StatusIcon(state: .paused, progress: 0.4, text: "32:14", dark: dark), width: 80)
         }
         exit(0)
     }

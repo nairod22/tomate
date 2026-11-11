@@ -186,16 +186,11 @@ struct OverlayView: View {
     @ViewBuilder private var primaryButton: some View {
         switch finished {
         case .work:
-            PrimaryButton(title: "Passer à la pause", color: Theme.pauseButton, action: proceed)
+            PrimaryButton(title: "Passer à la pause", action: proceed)
         case .pause:
-            PrimaryButton(title: "Reprendre le travail", color: Theme.workButton, action: proceed)
+            PrimaryButton(title: "Reprendre le travail", color: Theme.blue, action: proceed)
         case .block:
-            PrimaryButton(
-                title: "Terminer le bloc",
-                color: scheme == .dark ? Color(hex: 0xF5F5F7) : Color(hex: 0x1D1D1F),
-                foreground: scheme == .dark ? Color(hex: 0x1D1D1F) : .white,
-                action: proceed
-            )
+            PrimaryButton(title: "Terminer le bloc", action: proceed)
         }
     }
 }

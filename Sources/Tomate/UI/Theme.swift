@@ -12,26 +12,29 @@ extension Color {
     }
 }
 
-/// Colors from the design canvas.
+/// Colors from the landing page: blue = work, ink = pause.
 enum Theme {
-    // Work = orange, pause = mint/teal.
-    static func work(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0xFF8A4C) : Color(hex: 0xE8590C) }
-    static func workText(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0xFFAD80) : Color(hex: 0xC2410C) }
-    static let workButton = Color(hex: 0xC2410C)
+    /// Landing-page blue.
+    static let blue = Color(hex: 0x009FE3)
 
-    static func pause(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0x2DD4BF) : Color(hex: 0x0D9488) }
-    static func pauseText(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0x5EEAD4) : Color(hex: 0x0F766E) }
-    static let pauseButton = Color(hex: 0x0F766E)
+    /// Work phase accent (progress, dots, toggles).
+    static func work(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0x33B5EA) : blue }
+    /// Pause phase: ink, flipped to near-white in dark mode.
+    static func pause(_ s: ColorScheme) -> Color { ink(s) }
 
-    static func primaryText(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0xF5F5F7) : Color(hex: 0x1D1D1F) }
-    static func secondaryText(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0xEBEBF5, opacity: 0.7) : Color(hex: 0x5E5E63) }
+    static func ink(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0xF5F5F7) : Color(hex: 0x0B0B0B) }
+    /// Text/icon color on an ink fill.
+    static func onInk(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0x0B0B0B) : .white }
+
+    static func primaryText(_ s: ColorScheme) -> Color { s == .dark ? Color(hex: 0xF5F5F7) : Color(hex: 0x0B0B0B) }
+    static func secondaryText(_ s: ColorScheme) -> Color { s == .dark ? .white.opacity(0.55) : Color(hex: 0x707070) }
 
     /// Neutral round-button / chip fill.
     static func fill(_ s: ColorScheme) -> Color { s == .dark ? .white.opacity(0.1) : .black.opacity(0.06) }
     /// Empty progress track.
     static func track(_ s: ColorScheme) -> Color { s == .dark ? .white.opacity(0.12) : .black.opacity(0.08) }
     /// Grouped section background.
-    static func group(_ s: ColorScheme) -> Color { s == .dark ? .white.opacity(0.06) : .white.opacity(0.6) }
+    static func group(_ s: ColorScheme) -> Color { s == .dark ? .white.opacity(0.06) : .white.opacity(0.5) }
     static func groupStroke(_ s: ColorScheme) -> Color { s == .dark ? .white.opacity(0.08) : .black.opacity(0.06) }
     /// Input field.
     static func field(_ s: ColorScheme) -> Color { s == .dark ? .white.opacity(0.08) : .white.opacity(0.85) }

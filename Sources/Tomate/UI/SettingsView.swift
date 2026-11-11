@@ -54,7 +54,7 @@ struct SettingsView: View {
                     Spacer()
                     Toggle("Son en fin de phase", isOn: $settings.soundOn)
                         .toggleStyle(.switch)
-                        .tint(Theme.workButton)
+                        .tint(Theme.blue)
                         .labelsHidden()
                 }
                 GroupDivider()
@@ -84,7 +84,7 @@ struct SettingsView: View {
                     Slider(value: $settings.volume, in: 0...1) { editing in
                         if !editing { SoundPlayer.play(settings.soundName, volume: settings.volume) }
                     }
-                    .tint(scheme == .dark ? Theme.work(scheme) : Theme.workButton)
+                    .tint(Theme.work(scheme))
                     .accessibilityLabel("Volume")
                     Image(systemName: "speaker.wave.3.fill")
                         .font(.system(size: 12))
@@ -95,6 +95,20 @@ struct SettingsView: View {
             }
 
             SettingsGroup(title: "Général") {
+                row {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Afficher le temps").font(.system(size: 13, weight: .semibold))
+                        Text("Dans la barre des menus")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Theme.secondaryText(scheme))
+                    }
+                    Spacer()
+                    Toggle("Afficher le temps dans la barre des menus", isOn: $settings.showMenuBarTime)
+                        .toggleStyle(.switch)
+                        .tint(Theme.blue)
+                        .labelsHidden()
+                }
+                GroupDivider()
                 row {
                     Text("Durée du snooze").font(.system(size: 13, weight: .semibold))
                     Spacer()
@@ -113,7 +127,7 @@ struct SettingsView: View {
                         set: { LoginItem.set($0); launchAtLogin = LoginItem.isEnabled }
                     ))
                     .toggleStyle(.switch)
-                    .tint(Theme.workButton)
+                    .tint(Theme.blue)
                     .labelsHidden()
                 }
             }
@@ -156,7 +170,7 @@ struct SettingsView: View {
                     Text("Actif")
                 }
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Theme.workText(scheme))
+                .foregroundStyle(Theme.work(scheme))
                 .padding(.horizontal, 8)
                 .frame(height: 22)
                 .background(Capsule().fill(Theme.work(scheme).opacity(scheme == .dark ? 0.16 : 0.12)))

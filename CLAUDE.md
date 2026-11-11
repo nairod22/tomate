@@ -3,7 +3,7 @@
 Pomodoro menu bar app, SwiftUI + AppKit, Swift Package, macOS 26+, no dependencies.
 
 - Build: `swift build` · app: `./build.sh [--install]`
-- Reference design: https://claude.ai/artifact/UjT7bxUwUCefHzjQi9NUb3 (capsule = proposal B)
+- Theme follows the landing page: blue `#009FE3` = work, ink = pause, no orange/red. Menu bar = landing tomato glyph (progress wedge, blue dot while running, pause bars when paused).
 - Everything `@MainActor`, strict Swift 6: zero warnings.
 - UI strings in French.
 - Landing page: `landingpage/index.html` (static, English), deployed to GitHub Pages by `.github/workflows/pages.yml` on push to `main`.

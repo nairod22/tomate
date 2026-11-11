@@ -35,7 +35,7 @@ open /Applications/Tomate.app
 
 ## Usage
 
-- Click the capsule → pick a mode → **Démarrer** (Start).
+- Click the tomato in the menu bar → pick a mode → **Démarrer** (Start). A blue dot means a session is running; pause bars mean it is paused.
 - End of phase: sound + popup → **Passer à la pause** (Start break) / **Reprendre** (Resume) or **Snooze**.
 - Settings (sliders icon): durations, cycles, sound, snooze, open at login.
 - Shortcuts: Space = pause/resume, Return = popup action.
@@ -47,7 +47,7 @@ Sources/Tomate/
   main.swift, AppDelegate.swift   # status item, popover, wiring
   Model/      # Preset, AppSettings (UserDefaults), TimerEngine
   Services/   # SoundPlayer, LoginItem
-  UI/         # capsule, home, timer, settings, overlay
+  UI/         # menu bar icon, home, timer, settings, overlay
   Debug.swift # PNG rendering of views
 build.sh      # release build → build/Tomate.app
 landingpage/  # static landing page (GitHub Pages)

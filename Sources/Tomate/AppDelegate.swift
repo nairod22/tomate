@@ -42,6 +42,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             MainActor.assumeIsolated { self?.engine.tick() }
         }
 
+        observeMenuBarTimeSetting()
         updateStatusItem()
 
         // Debug: TOMATE_AUTOSTART=1 starts the active preset at launch.
@@ -70,25 +71,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         overlay.show(finished)
     }
 
+    /// Re-renders the status item whenever the "show time" setting flips.
+    private func observeMenuBarTimeSetting() {
+        withObservationTracking {
+            _ = settings.showMenuBarTime
+        } onChange: { [weak self] in
+            Task { @MainActor in
+                self?.updateStatusItem()
+                self?.observeMenuBarTimeSetting()
+            }
+        }
+    }
+
     private func updateStatusItem() {
         guard let button = statusItem?.button else { return }
         let dark = button.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
 
-        let kind: StatusCapsule.Kind
-        let text: String
+        let state: StatusIcon.State
         switch engine.state {
-        case .idle:
-            kind = .idle; text = "Prêt"
-        case .running(let p, _), .paused(let p, _):
-            kind = p == .pause ? .pause : .work
-            text = Format.countdown(engine.remaining)
-        case .awaiting(let f):
-            kind = f == .pause ? .pause : .work
-            text = "00:00"
+        case .idle: state = .idle
+        case .paused: state = .paused
+        case .running, .awaiting: state = .running
         }
+        let progress = engine.isIdle ? 0.25 : engine.progress
+        let text = (settings.showMenuBarTime && !engine.isIdle) ? Format.countdown(engine.remaining) : nil
 
         let scale = button.window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
-        button.image = StatusCapsule(kind: kind, text: text, dark: dark).render(scale: scale)
-        button.alphaValue = engine.isPaused ? 0.6 : 1
+        button.image = StatusIcon(state: state, progress: progress, text: text, dark: dark).render(scale: scale)
+
+        let label: String
+        switch state {
+        case .idle: label = "Tomate, prêt"
+        case .paused: label = "Tomate, en pause\(text.map { ", \($0)" } ?? "")"
+        case .running: label = "Tomate, en cours\(text.map { ", \($0)" } ?? "")"
+        }
+        button.setAccessibilityLabel(label)
     }
 }
