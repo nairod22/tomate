@@ -18,6 +18,12 @@ Download `Tomate.zip` from the [latest release](https://github.com/nairod22/toma
 
 You only need to do this once.
 
+Or, from Terminal, remove the quarantine flag instead:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Tomate.app
+```
+
 ## Build from source
 
 Requires macOS 26 and Xcode 26 (Swift 6.2). No dependencies.
