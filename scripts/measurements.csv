@@ -1,0 +1,7 @@
+date,label,scenario,window_s,cpu_s,cpu_pct,idle_wakeups_per_s,footprint_start_mb,footprint_end_mb
+2026-11-11,before,running,60,0.660,1.100,0.17,23.0,23.0
+2026-11-11,before,paused,60,0.560,0.933,0.05,22.0,22.0
+2026-11-11,before,idle,60,0.020,0.033,0.00,17.0,18.0
+2026-11-11,after,running,60,0.030,0.050,0.03,17.0,17.0
+2026-11-11,after,paused,60,0.010,0.017,0.03,17.0,17.0
+2026-11-11,after,idle,60,0.010,0.017,0.02,17.0,16.0

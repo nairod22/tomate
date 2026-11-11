@@ -33,9 +33,11 @@ Requires macOS 26 and Xcode 26 (Swift 6.2). No dependencies.
 open /Applications/Tomate.app
 ```
 
+Tests: `swift test`. Background cost: `scripts/measure-idle.sh`.
+
 ## Usage
 
-- Click the tomato in the menu bar → pick a mode → **Démarrer** (Start). A blue dot means a session is running; pause bars mean it is paused.
+- Click the tomato in the menu bar → pick a mode → **Démarrer** (Start). A blue dot means a session is running; pause bars mean it is paused. The menu bar shows the minutes left ("25 min").
 - End of phase: sound + popup → **Passer à la pause** (Start break) / **Reprendre** (Resume) or **Snooze**.
 - Settings (sliders icon): durations, cycles, sound, snooze, open at login.
 - Shortcuts: Space = pause/resume, Return = popup action.
@@ -43,12 +45,22 @@ open /Applications/Tomate.app
 ## Structure
 
 ```
-Sources/Tomate/
-  main.swift, AppDelegate.swift   # status item, popover, wiring
-  Model/      # Preset, AppSettings (UserDefaults), TimerEngine
-  Services/   # SoundPlayer, LoginItem
-  UI/         # menu bar icon, home, timer, settings, overlay
-  Debug.swift # PNG rendering of views
+Sources/TomateCore/     # no AppKit, fully unit-tested
+  Timer/      # PomodoroSession (pure state machine), TimerEngine, clock + scheduler
+  MenuBar/    # MenuBarFace, MenuBarSchedule (when to redraw), MenuBarRefresher
+  Settings/   # Preset, AppSettings (UserDefaults)
+  Format/     # display strings
+Sources/Tomate/         # menu bar app
+  App/        # main, AppDelegate, MenuBarController, debug env
+  MenuBar/    # status icon rendering
+  Popover/    # home and timer screens
+  Settings/   # settings screen
+  Overlay/    # full-screen popup at phase end
+  Components/, Theme/, Services/ (sound, login item), Debug/ (PNG snapshots)
+Tests/
+  TomateCoreTests/   # transitions, sleep/wake, rapid actions, wake-up budgets
+  TomatePerfTests/   # menu bar icon render cost
+scripts/measure-idle.sh  # background CPU/memory, appended to scripts/measurements.csv
 build.sh      # release build → build/Tomate.app
 landingpage/  # static landing page (GitHub Pages)
 ```

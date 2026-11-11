@@ -24,6 +24,9 @@ jobs:
           fi
           echo "version=$PLIST_VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Run tests
+        run: swift test --skip TomatePerfTests
+
       - name: Build Tomate.app
         run: ./build.sh
 
